@@ -13,6 +13,7 @@ The following command are supported in the Command Palette:
 ### skipper: make
 
 Displays a list of targets available in the Makefile and invokes the selected target in terminal.
+
 I.e. `skipper make <target>`
 
 <p align="center">
@@ -34,6 +35,7 @@ Filters only the `generate-*` targets for easier access.
 ### skipper: make unit-test
 
 Invokes `unit-test` target on the package of the opened file.
+
 I.e. `skipper make unit-test TEST=<file_path>`
 
 <p align="center">
@@ -53,3 +55,4 @@ Apply cover profile to show test coverage:
 ## Requirements
 
 * [Skipper](https://github.com/Stratoscale/skipper) tool should be available in path.
+* A Makefile in the codebase.
