@@ -16,6 +16,10 @@
     "onCommand:vscode-skipper.skipperMakeUnitTest",
     "onCommand:vscode-skipper.skipperMakeGenerate"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielerez/vscode-skipper"
+  },
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
