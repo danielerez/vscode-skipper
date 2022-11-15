@@ -49,7 +49,7 @@ Apply cover profile to show test coverage:
 <p align="center">
 <img src="images/apply_cover_profile.gif" width=75%>
 <br/>
-<em>Go Apply Cover Profile</em>
+<em>(Go: Apply Cover Profile)</em>
 </p>
 
 ## Requirements

@@ -101,7 +101,7 @@ const getWorkspaceFolder = () => {
 	if (!workspaceFolders) {
 		return;
 	}
-	return workspaceFolders[0].name;
+	return workspaceFolders[0].uri.path;
 }
 
 // This method is called when your extension is deactivated
