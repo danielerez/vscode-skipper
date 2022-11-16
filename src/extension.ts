@@ -5,24 +5,18 @@ import {spawn, execSync} from 'child_process';
 import { ensureTerminalExists, selectTerminal } from "./terminal";
 import path = require('path');
 
-interface CacheObject { [version: string]: { [path: string]: any } }
-
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-skipper" is now active!');
-
-
     const subscriptions = [
         vscode.commands.registerCommand('vscode-skipper.skipperMake', () => runMake(context)),
 		vscode.commands.registerCommand('vscode-skipper.skipperMakeUnitTest', () => runMakeUnitTest(context)),
 		vscode.commands.registerCommand('vscode-skipper.skipperMakeGenerate', () => runMakeGenerate(context)),
     ];
-
     subscriptions.forEach((sub) => {context.subscriptions.push(sub);});
+
+	// Cache targets
+	findMakeTargets(context);
 }
 
 const runMake = async (context: vscode.ExtensionContext) => {
@@ -49,17 +43,17 @@ const runMakeGenerate = async (context: vscode.ExtensionContext) => {
 const invokeSkipperMake = async (context: vscode.ExtensionContext, targets: string[]) => {
 	const target = await vscode.window.showQuickPick(targets);
     if (target !== undefined) {
-		context.globalState.update('lastTarget', target);
+		context.workspaceState.update('lastTarget', target);
 		sendTextsToTerminal([
 			`cd ${getWorkspaceFolder()}`,
 			`skipper make ${target}`
 		  ]);
     }
-}
+};
 
 // Get a list of targets
 const findMakeTargets = (context: vscode.ExtensionContext) => {
-	let targets = context.globalState.get<string[]>("target");
+	let targets = context.workspaceState.get<string[]>("target");
 	if (!targets) {
 		// This is approximately the Bash completion sequence run to get make targets.
 		const bashCompletion = `make -pRrq : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($1 !~ "^[#.]") {print $1}}' | egrep -v '^[^[:alnum:]]' | sort | xargs`;
@@ -67,7 +61,7 @@ const findMakeTargets = (context: vscode.ExtensionContext) => {
 		targets = res.toString().split(" ");
 	}
 
-	let lastTarget = context.globalState.get<string>("lastTarget");
+	let lastTarget = context.workspaceState.get<string>("lastTarget");
 	if (lastTarget) {
 		const index = targets.indexOf(lastTarget);
 		if (index !== -1) {
@@ -102,7 +96,7 @@ const getWorkspaceFolder = () => {
 		return;
 	}
 	return workspaceFolders[0].uri.path;
-}
+};
 
 // This method is called when your extension is deactivated
 export function deactivate() {}

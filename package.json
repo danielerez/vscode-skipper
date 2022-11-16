@@ -2,7 +2,7 @@
   "name": "vscode-skipper",
   "displayName": "Skipper",
   "description": "Extension for running Skipper commands",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "publisher": "DanielErez",
   "engines": {
     "vscode": "^1.73.0"
