@@ -54,5 +54,6 @@ Apply cover profile to show test coverage:
 
 ## Requirements
 
-* [Skipper](https://github.com/Stratoscale/skipper) tool should be available in path.
+* [Skipper](https://github.com/Stratoscale/skipper) tool available in path.
+* [make](https://www.gnu.org/software/make/) tool available in path.
 * A Makefile in the codebase.

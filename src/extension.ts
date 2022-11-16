@@ -53,12 +53,17 @@ const invokeSkipperMake = async (context: vscode.ExtensionContext, targets: stri
 
 // Get a list of targets
 const findMakeTargets = (context: vscode.ExtensionContext) => {
-	let targets = context.workspaceState.get<string[]>("target");
+	let wsFolder = getWorkspaceFolder();
+	if (!wsFolder) {
+		return [];
+	}
+	let targets = context.workspaceState.get<string[]>("targets_" + wsFolder);
 	if (!targets) {
 		// This is approximately the Bash completion sequence run to get make targets.
 		const bashCompletion = `make -pRrq : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($1 !~ "^[#.]") {print $1}}' | egrep -v '^[^[:alnum:]]' | sort | xargs`;
-		let res = execSync(bashCompletion, {cwd: vscode.workspace.rootPath});
+		let res = execSync(bashCompletion, {cwd: wsFolder});
 		targets = res.toString().split(" ");
+		context.workspaceState.update('targets', targets);
 	}
 
 	let lastTarget = context.workspaceState.get<string>("lastTarget");
@@ -91,11 +96,19 @@ const sendTextsToTerminal = async (texts: string[]) => {
 };
 
 const getWorkspaceFolder = () => {
-	let workspaceFolders = vscode.workspace.workspaceFolders;
-	if (!workspaceFolders) {
-		return;
+	if (vscode.window.activeTextEditor) {
+		let filePath = path.dirname(vscode.window.activeTextEditor.document.fileName);
+		let workspaceFolders = vscode.workspace.workspaceFolders;
+		if (!workspaceFolders) {
+			return "";
+		}
+		let wsFolder = workspaceFolders?.find(folder => filePath.indexOf(folder.uri.path) >= 0);
+		if (!wsFolder) {
+			return "";
+		}
+		return wsFolder.uri.path;
 	}
-	return workspaceFolders[0].uri.path;
+	return "";
 };
 
 // This method is called when your extension is deactivated
